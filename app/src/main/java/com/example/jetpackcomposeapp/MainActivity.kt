@@ -33,8 +33,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ImageCard("Card Image", painterResource(id = R.drawable.bg_horti), "Horty image")
-        }
+            ProfileSreen()        }
 
     }
 }
