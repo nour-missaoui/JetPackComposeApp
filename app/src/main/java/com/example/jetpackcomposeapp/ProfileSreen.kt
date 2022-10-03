@@ -1,27 +1,31 @@
 package com.example.jetpackcomposeapp
 
 
-import android.app.Notification
-import android.view.ActionProvider
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.Icon
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -33,10 +37,71 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun ProfileSreen() {
+    var selectedTabIndex by remember {
+        mutableStateOf(0)
+    }
     Column(modifier = Modifier.fillMaxSize()) {
         TopBar(name = "NourMissaoui_Instagram", modifier = Modifier.padding(10.dp))
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(25.dp))
         ProfileSection()
+        Spacer(modifier = Modifier.height(25.dp))
+
+        ButtonSection(Modifier.fillMaxWidth())
+
+        Spacer(modifier = Modifier.height(25.dp))
+        HighlightSection(
+            highlight = listOf(
+                ImageWithText(
+                    image = painterResource(id = R.drawable.bg_horti),
+                    text = "YouTube"
+                ),
+                ImageWithText(
+                    image = painterResource(id = R.drawable.bg_horti),
+                    text = "Q&A"
+                ),
+                ImageWithText(
+                    image = painterResource(id = R.drawable.bg_horti),
+                    text = "Discord"
+                ),
+                ImageWithText(
+                    image = painterResource(id = R.drawable.bg_horti),
+                    text = "Telegram"
+                ),
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+        )
+        Spacer(modifier = Modifier.height(25.dp))
+        PostTabView(
+            imageWithTextList = listOf(
+                ImageWithText(
+                    painterResource(id = R.drawable.bg_horti ) ,
+                    text = "Posts"
+                ), ImageWithText(
+                    painterResource(id = R.drawable.bg_horti ) ,
+                    text = "Reels"
+                ), ImageWithText(
+                    painterResource(id = R.drawable.bg_horti ) ,
+                    text = "Profile"
+                )
+            ), modifier = Modifier.fillMaxWidth()
+        ){
+            selectedTabIndex = it
+        }
+        when(selectedTabIndex){
+            0-> PostSection(post = listOf(
+                painterResource(id = R.drawable.bg_horti),
+                painterResource(id = R.drawable.bg_horti),
+                painterResource(id = R.drawable.bg_horti),
+                painterResource(id = R.drawable.bg_horti),
+                painterResource(id = R.drawable.bg_horti),
+                painterResource(id = R.drawable.bg_horti),
+                painterResource(id = R.drawable.bg_horti),
+            ) )
+        }
+
+
     }
 }
 
@@ -107,33 +172,6 @@ fun ProfileSection(
             followedBy = listOf("Ala", "Ahmed"),
             otherCount = 17
         )
-
-        Spacer(modifier = Modifier.height(25.dp))
-
-        ButtonSection(Modifier.fillMaxWidth())
-
-        Spacer(modifier = Modifier.height(25.dp))
-        HighlightSection(highlight = listOf(
-            StoryHighlight(
-                image = painterResource(id = R.drawable.bg_horti),
-                text = "YouTube"
-            ),
-            StoryHighlight(
-                image = painterResource(id = R.drawable.bg_horti),
-                text = "Q&A"
-            ),
-            StoryHighlight(
-                image = painterResource(id = R.drawable.bg_horti),
-                text = "Discord"
-            ),
-            StoryHighlight(
-                image = painterResource(id = R.drawable.bg_horti),
-                text = "Telegram"
-            ),
-        ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp))
 
 
     }
@@ -251,7 +289,7 @@ fun ProfileData(
 fun ButtonSection(
     modifier: Modifier = Modifier
 ) {
-    val minWidth = 90.dp
+    val minWidth = 100.dp
     val height = 30.dp
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly, modifier = modifier
@@ -261,25 +299,37 @@ fun ButtonSection(
             icon = Icons.Default.KeyboardArrowDown,
             modifier = Modifier
                 .defaultMinSize(minWidth = minWidth)
+                .fillMaxWidth()
                 .size(height)
+                .weight(1f)
+                .padding(start = 10.dp, end = 10.dp)
         )
         ActionButton(
             text = "Message",
             modifier = Modifier
                 .defaultMinSize(minWidth = minWidth)
+                .fillMaxWidth()
                 .size(height)
+                .weight(1f)
+                .padding(start = 10.dp, end = 10.dp)
         )
         ActionButton(
             text = "Email",
             modifier = Modifier
                 .defaultMinSize(minWidth = minWidth)
+                .fillMaxWidth()
                 .size(height)
+                .weight(1f)
+                .padding(start = 10.dp, end = 10.dp)
         )
         ActionButton(
             icon = Icons.Default.KeyboardArrowDown,
             modifier = Modifier
                 .defaultMinSize(minWidth = 20.dp)
+                .fillMaxWidth()
                 .size(height)
+                .weight(0.3f)
+                .padding(start = 10.dp, end = 10.dp)
         )
     }
 }
@@ -310,7 +360,7 @@ fun ActionButton(
 @Composable
 fun HighlightSection(
     modifier: Modifier = Modifier,
-    highlight: List<StoryHighlight>
+    highlight: List<ImageWithText>
 ) {
     LazyRow(modifier = modifier) {
         items(highlight.size) {
@@ -330,3 +380,60 @@ fun HighlightSection(
     }
 }
 
+@Composable
+fun PostTabView(
+    modifier: Modifier = Modifier,
+    imageWithTextList: List<ImageWithText>,
+    onTabSelected: (selectedIndex: Int) -> Unit
+) {
+
+    var selectedTabIndex by remember {
+        mutableStateOf(0)
+    }
+
+    val inactiveColr = Color(0xFF777777)
+    TabRow(
+        selectedTabIndex = selectedTabIndex,
+        backgroundColor = Color.Transparent,
+        contentColor = Color.Black,
+        modifier = modifier
+    ) {
+        imageWithTextList.forEachIndexed { index, item ->
+            Tab(selected = selectedTabIndex == index,
+                selectedContentColor = Color.Black,
+                unselectedContentColor = inactiveColr,
+                onClick = {
+                    selectedTabIndex = index
+                    onTabSelected(index)
+                }) {
+                Icon(
+                    painter = item.image,
+                    contentDescription = item.text,
+                    tint = if (selectedTabIndex == index) Color.Black else inactiveColr,
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .size(20.dp)
+
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun PostSection(
+    post: List<Painter>,
+    modifier: Modifier =Modifier
+) {
+    LazyVerticalGrid(cells = GridCells.Fixed(3), modifier.scale(1.01f)) {
+        items(post.size) {
+            Image(
+                painter = post[it], contentDescription = null,
+                contentScale = ContentScale.Crop, modifier = Modifier
+                    .aspectRatio(1f)
+                    .border(width = 1.dp, Color.White)
+            )
+        }
+    }
+}
